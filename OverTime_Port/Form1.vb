@@ -280,6 +280,8 @@ Public Class Form1
         CalculateLunchSum("T" & currentUser.userName, lunchLabel, Mid(Format(DateTimePicker.Value, "dd/MM/yyyy"), 4, 2))
     End Sub
     Private Sub reportButton_Click(sender As Object, e As EventArgs) Handles reportButton.Click
+        Dim hijriMonth As Integer = hijriCalendar.GetMonth(CDate(DateTimePicker.Value.AddDays(offset)))  'ramadan is 9
+        Dim hijriDay As Integer = hijriCalendar.GetDayOfMonth(CDate(DateTimePicker.Value.AddDays(offset)))
         Dim selectedMonth As String = ComboBox1.SelectedItem.ToString()
         Dim daysInMonth As Integer = DateTime.DaysInMonth(DateTime.Now.Year, Convert.ToInt32(selectedMonth))
         Dim excelApp As New Excel.Application()    ' Create a new Excel application object
@@ -393,6 +395,11 @@ Public Class Form1
                 '''''''''''''''''''''''''''''The Table''''''''''''''''''''
                 For day As Integer = 1 To daysInMonth
                     Dim currentDate As Date = New Date(DateTime.Now.Year, Convert.ToInt32(selectedMonth), day)
+                    hijriMonth = hijriCalendar.GetMonth(currentDate.AddDays(offset))  'ramadan is 9
+                    hijriDay = hijriCalendar.GetDayOfMonth(currentDate.AddDays(offset))
+                    If hijriMonth = 9 Then
+                        tableWorksheet.Columns("D").Hidden = False
+                    End If
                     tableWorksheet.Range("A" & (day + 2)).Value = currentDate.ToString("dd/MM/yyyy")
                     query = "SELECT WeekDay, Shift, FromTime, ToTime, Holiday FROM T" & user.userName & " WHERE Date = @Date"
                     Using connection As New SQLiteConnection(connectionString)
@@ -409,16 +416,30 @@ Public Class Form1
                                     Dim Type As String = reader.GetString(4)
                                     ' Do something with the retrieved values
                                     If Shift = "Mornning" Then
-                                        tableWorksheet.Range("B" & (day + 2)).Value = (tableWorksheet.Range("B" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c)
+                                        tableWorksheet.Range("B" & (day + 2)).Value = Replace((tableWorksheet.Range("B" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
+                                        'If Type = "Official Holiday" Then
+                                        '    tableWorksheet.Range("F" & (day + 2)).Value = "أجازة_رسمية"
+                                        '    If hijriMonth = 9 Then
+                                        '        tableWorksheet.Range("F" & (day + 2)).Value = "أجازة_رسمية" & vbNewLine & hijriDay & "رمضان"
+                                        '    End If
+                                        'ElseIf Type = "WeekEnd" Then
+                                        '    tableWorksheet.Range("F" & (day + 2)).Value = "عطلة_أسبوعية"
+                                        '    If hijriMonth = 9 Then
+                                        '        tableWorksheet.Range("F" & (day + 2)).Value = "عطلة_أسبوعية" & vbNewLine & hijriDay & "رمضان"
+                                        '    End If
+                                        'ElseIf Type = "WorkDay" Then
+                                        '    tableWorksheet.Range("F" & (day + 2)).Value = "يوم_عمل"
+                                        '    If hijriMonth = 9 Then
+                                        '        tableWorksheet.Range("F" & (day + 2)).Value = "يوم_عمل" & vbNewLine & hijriDay & "رمضان"
+                                        '    End If
+                                        'End If
                                     ElseIf Shift = "Afternoon" Then
 
                                     ElseIf Shift = "Night" Then
-                                        tableWorksheet.Range("E" & (day + 2)).Value = (tableWorksheet.Range("E" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c)
+                                        tableWorksheet.Range("E" & (day + 2)).Value = Replace((tableWorksheet.Range("E" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
                                     End If
-                                    'tableWorksheet.Range("B" & (day + 2)).Value = "data found"
                                 End While
                             Else
-                                'tableWorksheet.Range("B" & (day + 2)).Value = "data not found"
                             End If
                         End Using
                     End Using
