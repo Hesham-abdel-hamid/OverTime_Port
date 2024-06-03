@@ -1,0 +1,146 @@
+[
+  {
+    "userName": "H",
+    "aliasName": "Test user",
+    "rank": "man",
+    "arabName": "مستخدم للاختبار",
+    "arabNick": "مستخدم",
+    "inTable": "False"
+  },
+  {
+    "userName": "90626",
+    "aliasName": "Hesham Refae",
+    "rank": "man",
+    "arabName": "هشام رفاعي سليمان",
+    "arabNick": "رفاعي",
+    "inTable": "False"
+  },
+  {
+    "userName": "113731",
+    "aliasName": "DR. Amin",
+    "rank": "man",
+    "arabName": "أمين السيد حامد",
+    "arabNick": "أمين",
+    "inTable": "False"
+  },
+  {
+    "userName": "139727",
+    "aliasName": "Mr. Ahmed Maher",
+    "rank": "man",
+    "arabName": "أحمد ماهر حسانين",
+    "arabNick": "ماهر",
+    "inTable": "False"
+  },
+  {
+    "userName": "211346",
+    "aliasName": "Hesham Abdelhamid",
+    "rank": "man",
+    "arabName": "هشام محمد عبد الحميد منصور ابراهيم",
+    "arabNick": "هشام",
+    "inTable": "True"
+  },
+  {
+    "userName": "214251",
+    "aliasName": "Ahmed Kamel",
+    "rank": "user",
+    "arabName": "أحمد عبد الرحيم أحمد كامل",
+    "arabNick": "كامل",
+    "inTable": "True"
+  },
+  {
+    "userName": "217563",
+    "aliasName": "Mina Noshy",
+    "rank": "user",
+    "arabName": "مينا نصحي عزمي",
+    "arabNick": "نصحي",
+    "inTable": "True"
+  },
+  {
+    "userName": "221768",
+    "aliasName": "Mohamed Radwan",
+    "rank": "user",
+    "arabName": "محمد رضوان محمد السيد",
+    "arabNick": "رضوان",
+    "inTable": "True"
+  },
+  {
+    "userName": "224152",
+    "aliasName": "Mahmoud Khater",
+    "rank": "user",
+    "arabName": "محمود سيد كامل خاطر",
+    "arabNick": "خاطر",
+    "inTable": "True"
+  },
+  {
+    "userName": "224263",
+    "aliasName": "Ayman Habashy",
+    "rank": "user",
+    "arabName": "أيمن منير حبشي",
+    "arabNick": "حيشي",
+    "inTable": "True"
+  },
+  {
+    "userName": "229830",
+    "aliasName": "Kirolos Mounir",
+    "rank": "user",
+    "arabName": "كيرلس منير اسحاق شنودة",
+    "arabNick": "كيرلس",
+    "inTable": "True"
+  },
+  {
+    "userName": "230653",
+    "aliasName": "Mina Gamal",
+    "rank": "user",
+    "arabName": "مينا جمال خله",
+    "arabNick": "جمال",
+    "inTable": "True"
+  },
+  {
+    "userName": "230889",
+    "aliasName": "Omar Tharwat",
+    "rank": "user",
+    "arabName": "عمر ثروت مصطفي بهريز",
+    "arabNick": "عمر",
+    "inTable": "True"
+  },
+  {
+    "userName": "235685",
+    "aliasName": "Hady Maher",
+    "rank": "user",
+    "arabName": "هادي ماهر حسين عبد اللطيف",
+    "arabNick": "هادي",
+    "inTable": "True"
+  },
+  {
+    "userName": "238026",
+    "aliasName": "Amr Yehia",
+    "rank": "user",
+    "arabName": "عمرو يحيي أنور علي",
+    "arabNick": "عمرو",
+    "inTable": "True"
+  },
+  {
+    "userName": "230049",
+    "aliasName": "Sherif Waly",
+    "rank": "user",
+    "arabName": "شريف عبد المنعم ابراهيم السيد والي",
+    "arabNick": "شريف",
+    "inTable": "True"
+  },
+  {
+    "userName": "239097",
+    "aliasName": "Yousef Hesham",
+    "rank": "user",
+    "arabName": "يوسف هشام مصطفي عبد الصادق",
+    "arabNick": "يوسف",
+    "inTable": "True"
+  },
+  {
+    "userName": "240956",
+    "aliasName": "Mostafa Samy",
+    "rank": "user",
+    "arabName": "مصطفي سامي شحات أحمد",
+    "arabNick": "مصطفي",
+    "inTable": "True"
+  }
+]
