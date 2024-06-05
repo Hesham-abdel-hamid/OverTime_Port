@@ -1,16 +1,16 @@
-﻿Imports Microsoft.VisualBasic.ApplicationServices
+﻿'Imports Microsoft.VisualBasic.ApplicationServices
 Imports Newtonsoft.Json
 Imports System.IO
 Imports System.Data.SQLite
-Imports System.Data.Entity.ModelConfiguration.Conventions
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel
+'Imports System.Data.Entity.ModelConfiguration.Conventions
+'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+'Imports System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel
 Imports System.Globalization
-Imports System.Data.SqlClient
-Imports System.Data.OleDb
+'Imports System.Data.SqlClient
+'Imports System.Data.OleDb
 Imports Microsoft.Office.Interop '.Excel
 Imports Microsoft.Office.Interop.Excel
-Imports Newtonsoft.Json.Linq
+'Imports Newtonsoft.Json.Linq
 
 Public Class Form1
     Dim json As String = File.ReadAllText("u.json")     ' Read the contents of the JSON file
@@ -86,7 +86,6 @@ Public Class Form1
             Dim hijriMonth As Integer = hijriCalendar.GetMonth(CDate(DateTimePicker.Value.AddDays(offset)))  'ramadan is 9
             Dim hijriDay As Integer = hijriCalendar.GetDayOfMonth(CDate(DateTimePicker.Value.AddDays(offset)))
             Dim lastSatHijMon As Integer = hijriCalendar.GetMonth(CDate(lastSat.AddDays(offset)))
-            'Dim lastSatHijDay As Integer = hijriCalendar.GetDayOfMonth(CDate(lastSat.AddDays(-1)))
             '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
             Select Case shiftCombo.SelectedItem
                 Case "Mornning"
@@ -189,6 +188,12 @@ Public Class Form1
                         End If
                     End If '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
             End Select
+            If vpnCheckBox.Checked = True Then
+                Transport = 0
+                BreakFastT = 0
+                LunchT = 0
+                OverTime = 0
+            End If
             Try
                 Using connection As New SQLiteConnection(connectionString)
                     connection.Open()
@@ -202,7 +207,7 @@ Public Class Form1
                         command.Parameters.AddWithValue("@FromTime", fromCombo.SelectedItem.ToString())
                         command.Parameters.AddWithValue("@ToTime", toCombo.SelectedItem.ToString())
                         command.Parameters.AddWithValue("@Duration", duration)
-                        command.Parameters.AddWithValue("@Holiday", If(oneistwoChk.Checked, "Official Holiday", If(dayOfWeek = "Friday" Or dayOfWeek = "Saturday", "WeekEnd", "WorkDay")))
+                        command.Parameters.AddWithValue("@Holiday", If(vpnCheckBox.Checked, "VPN", If(oneistwoChk.Checked, "Official Holiday", If(dayOfWeek = "Friday" Or dayOfWeek = "Saturday", "WeekEnd", "WorkDay"))))
                         command.Parameters.AddWithValue("@Transportation", Transport)
                         command.Parameters.AddWithValue("@BreakFast", BreakFastT)
                         command.Parameters.AddWithValue("@Lunch", LunchT)
@@ -214,6 +219,7 @@ Public Class Form1
                 End Using
                 MsgBox("Data Applied Successfully")
                 oneistwoChk.Checked = False
+                vpnCheckBox.Checked = False
             Catch ex As Exception
                 MessageBox.Show("Error: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -280,6 +286,8 @@ Public Class Form1
         CalculateLunchSum("T" & currentUser.userName, lunchLabel, Mid(Format(DateTimePicker.Value, "dd/MM/yyyy"), 4, 2))
     End Sub
     Private Sub reportButton_Click(sender As Object, e As EventArgs) Handles reportButton.Click
+        Form2.Show()
+        Form2.ProgressBar1.Value = 1
         Dim hijriMonth As Integer = hijriCalendar.GetMonth(CDate(DateTimePicker.Value.AddDays(offset)))  'ramadan is 9
         Dim hijriDay As Integer = hijriCalendar.GetDayOfMonth(CDate(DateTimePicker.Value.AddDays(offset)))
         Dim selectedMonth As String = ComboBox1.SelectedItem.ToString()
@@ -293,7 +301,9 @@ Public Class Form1
         Dim tableWorksheet As Excel.Worksheet = workbook.Sheets("جدول الشهر")
         Dim users As List(Of User) = JsonConvert.DeserializeObject(Of List(Of User))(json)
         Dim row As Integer = 3
+        Form2.ProgressBar1.Value = Form2.ProgressBar1.Value + 1
         For Each user In users                ' total worksheet and transportation worksheet
+            Form2.ProgressBar1.Value = Form2.ProgressBar1.Value + 5
             If user.inTable = "True" Then
                 totalWorksheet.Range("A" & row).Value = user.arabName
                 totalWorksheet.Range("B" & row).Value = user.userName
@@ -392,15 +402,11 @@ Public Class Form1
                         transWorksheet.Range("F" & row).Value = "0"
                     End If
                 End Using
-                '''''''''''''''''''''''''''''The Table''''''''''''''''''''
-                For day As Integer = 1 To daysInMonth
+                For day As Integer = 1 To daysInMonth    '''''''''''''''''''''''''''''The Table''''''''''''''''''''
                     Dim currentDate As Date = New Date(DateTime.Now.Year, Convert.ToInt32(selectedMonth), day)
                     hijriMonth = hijriCalendar.GetMonth(currentDate.AddDays(offset))  'ramadan is 9
                     hijriDay = hijriCalendar.GetDayOfMonth(currentDate.AddDays(offset))
-                    If hijriMonth = 9 Then
-                        tableWorksheet.Columns("D").Hidden = False
-                    End If
-                    tableWorksheet.Range("A" & (day + 2)).Value = currentDate.ToString("dd/MM/yyyy")
+                    tableWorksheet.Range("A" & (day + 2)).Value = currentDate.ToString("dd/MM/yyyy") & vbNewLine & currentDate.DayOfWeek.ToString()
                     query = "SELECT WeekDay, Shift, FromTime, ToTime, Holiday FROM T" & user.userName & " WHERE Date = @Date"
                     Using connection As New SQLiteConnection(connectionString)
                         Dim command As New SQLiteCommand(query, connection)
@@ -414,29 +420,62 @@ Public Class Form1
                                     Dim FromTime As String = reader.GetString(2)
                                     Dim ToTime As String = reader.GetString(3)
                                     Dim Type As String = reader.GetString(4)
-                                    ' Do something with the retrieved values
                                     If Shift = "Mornning" Then
-                                        tableWorksheet.Range("B" & (day + 2)).Value = Replace((tableWorksheet.Range("B" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
-                                        'If Type = "Official Holiday" Then
-                                        '    tableWorksheet.Range("F" & (day + 2)).Value = "أجازة_رسمية"
-                                        '    If hijriMonth = 9 Then
-                                        '        tableWorksheet.Range("F" & (day + 2)).Value = "أجازة_رسمية" & vbNewLine & hijriDay & "رمضان"
-                                        '    End If
-                                        'ElseIf Type = "WeekEnd" Then
-                                        '    tableWorksheet.Range("F" & (day + 2)).Value = "عطلة_أسبوعية"
-                                        '    If hijriMonth = 9 Then
-                                        '        tableWorksheet.Range("F" & (day + 2)).Value = "عطلة_أسبوعية" & vbNewLine & hijriDay & "رمضان"
-                                        '    End If
-                                        'ElseIf Type = "WorkDay" Then
-                                        '    tableWorksheet.Range("F" & (day + 2)).Value = "يوم_عمل"
-                                        '    If hijriMonth = 9 Then
-                                        '        tableWorksheet.Range("F" & (day + 2)).Value = "يوم_عمل" & vbNewLine & hijriDay & "رمضان"
-                                        '    End If
-                                        'End If
+                                        If Type = "VPN" Then
+                                            tableWorksheet.Range("B" & (day + 2)).Value = Replace((tableWorksheet.Range("B" & (day + 2)).Value & "-" & user.arabNick & Type).TrimStart("-"c), "-", vbNewLine)
+                                        Else
+                                            tableWorksheet.Range("B" & (day + 2)).Value = Replace((tableWorksheet.Range("B" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
+                                        End If
+                                        If Type = "Official Holiday" Then
+                                            tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A101").Value
+                                            If hijriMonth = 9 Then
+                                                tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A101").Value & "-" & hijriDay & tableWorksheet.Range("A100").Value
+                                            End If
+                                        ElseIf Type = "WeekEnd" Then
+                                            tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A102").Value
+                                            If hijriMonth = 9 Then
+                                                tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A102").Value & "-" & hijriDay & tableWorksheet.Range("A100").Value
+                                            End If
+                                        ElseIf Type = "WorkDay" Then
+                                            tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A103").Value
+                                            If hijriMonth = 9 Then
+                                                tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A103").Value & "-" & hijriDay & tableWorksheet.Range("A100").Value
+                                            End If
+                                        End If
                                     ElseIf Shift = "Afternoon" Then
+                                        If hijriMonth = 9 Then    'ramadan
+                                            tableWorksheet.Columns("D").Hidden = False
 
+
+                                        Else    'not ramadan
+                                            If Type = "VPN" Then
+                                                tableWorksheet.Range("C" & (day + 2)).Value = Replace((tableWorksheet.Range("C" & (day + 2)).Value & "-" & user.arabNick & Type).TrimStart("-"c), "-", vbNewLine)
+                                            Else
+                                                tableWorksheet.Range("C" & (day + 2)).Value = Replace((tableWorksheet.Range("C" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
+                                            End If
+                                        End If
                                     ElseIf Shift = "Night" Then
-                                        tableWorksheet.Range("E" & (day + 2)).Value = Replace((tableWorksheet.Range("E" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
+                                        If Type = "VPN" Then
+                                            tableWorksheet.Range("E" & (day + 2)).Value = Replace((tableWorksheet.Range("E" & (day + 2)).Value & "-" & user.arabNick & Type).TrimStart("-"c), "-", vbNewLine)
+                                        Else
+                                            tableWorksheet.Range("E" & (day + 2)).Value = Replace((tableWorksheet.Range("E" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
+                                        End If
+                                        If Type = "Official Holiday" Then
+                                            tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A101").Value
+                                            If hijriMonth = 9 Then
+                                                tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A101").Value & "-" & hijriDay & tableWorksheet.Range("A100").Value
+                                            End If
+                                        ElseIf Type = "WeekEnd" Then
+                                            tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A102").Value
+                                            If hijriMonth = 9 Then
+                                                tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A102").Value & "-" & hijriDay & tableWorksheet.Range("A100").Value
+                                            End If
+                                        ElseIf Type = "WorkDay" Then
+                                            tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A103").Value
+                                            If hijriMonth = 9 Then
+                                                tableWorksheet.Range("F" & (day + 2)).Value = tableWorksheet.Range("A103").Value & "-" & hijriDay & tableWorksheet.Range("A100").Value
+                                            End If
+                                        End If
                                     End If
                                 End While
                             Else
@@ -448,13 +487,21 @@ Public Class Form1
                 row = row + 1
             End If
         Next
+        Form2.ProgressBar1.Value = 90
         transWorksheet.Range("G" & row & ":G20").Value = ""
-        Dim saveFileDialog As New SaveFileDialog()    ' Save the workbook
-        saveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx"
-        saveFileDialog.FileName = "overTime_Report.xlsx"
-        saveFileDialog.InitialDirectory = "\\nbe.ahly.bank\plz\New Departments\HQ\Business Technology\IT_Operation"
-        If saveFileDialog.ShowDialog() = DialogResult.OK Then
-            workbook.SaveAs(saveFileDialog.FileName)
+        tableWorksheet.Range("A100:A103").Value = ""
+        Dim range As Microsoft.Office.Interop.Excel.Range = tableWorksheet.Range("A3:F35")
+        range.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter
+        range.VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter
+        Form2.ProgressBar1.Value = 95
+        Dim SaveFileDialog As New SaveFileDialog()    ' Save the workbook
+        SaveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx"
+        SaveFileDialog.FileName = "overTime_Report.xlsx"
+        SaveFileDialog.InitialDirectory = "\\nbe.ahly.bank\plz\New Departments\HQ\Business Technology\IT_Operation"
+        Form2.ProgressBar1.Value = 100
+        Form2.Close()
+        If SaveFileDialog.ShowDialog() = DialogResult.OK Then
+            workbook.SaveAs(SaveFileDialog.FileName)
             MessageBox.Show("Report saved successfully.")
         End If
         workbook.Close(True)    ' Close the workbook
@@ -504,6 +551,24 @@ Public Class Form1
             ramLabel.Text = hijriDay & " Ramadan"
         Else
             ramLabel.Visible = False
+        End If
+        Dim selectedDate As DateTime = DateTimePicker.Value
+        Dim dayOfWeek As String = selectedDate.DayOfWeek.ToString()
+        If shiftCombo.SelectedItem = "Mornning" Then
+            fromCombo.SelectedItem = "07:00 AM"
+            toCombo.SelectedItem = "03:00 PM"
+            If dayOfWeek = "Friday" Or dayOfWeek = "Saturday" Then
+                toCombo.SelectedItem = "07:00 PM"
+            End If
+        ElseIf shiftCombo.SelectedItem = "Afternoon" Then
+            fromCombo.SelectedItem = "02:00 PM"
+            toCombo.SelectedItem = "10:00 PM"
+        ElseIf shiftCombo.SelectedItem = "Night" Then
+            fromCombo.SelectedItem = "09:00 PM"
+            toCombo.SelectedItem = "07:00 AM"
+            If dayOfWeek = "Friday" Or dayOfWeek = "Saturday" Then
+                fromCombo.SelectedItem = "07:00 PM"
+            End If
         End If
     End Sub
 
@@ -560,23 +625,17 @@ Public Class Form1
     Public Sub FindLastApply(table As String, lablName As System.Windows.Forms.Label)
         Dim connectionString As String = "Data Source=OPDB.db;Version=3;"
         Dim allDates As New List(Of DateTime)
-
         Using connection As New SQLiteConnection(connectionString)
             connection.Open()
             Dim query As String = "SELECT date FROM " & table
             Dim command As New SQLiteCommand(query, connection)
             Dim reader As SQLiteDataReader = command.ExecuteReader()
-
-            ' Collect all the date values in the list
-            While reader.Read()
+            While reader.Read()    ' Collect all the date values in the list
                 If Not reader.IsDBNull(reader.GetOrdinal("date")) Then
                     Dim dateString As String = reader.GetString(reader.GetOrdinal("date"))
-
-                    ' Try to parse the date string in different formats
-                    Dim formats() As String = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy"}
+                    Dim formats() As String = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy"}    ' Try to parse the date string in different formats
                     Dim parsedDate As DateTime
                     Dim isDateParsed As Boolean = False
-
                     For Each format As String In formats
                         If DateTime.TryParseExact(dateString, format, Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.None, parsedDate) Then
                             allDates.Add(parsedDate)
@@ -584,19 +643,15 @@ Public Class Form1
                             Exit For
                         End If
                     Next
-
                     If Not isDateParsed Then
                         MsgBox("Error: Unable to parse a date value")
                     End If
                 End If
             End While
-
             reader.Close()
             connection.Close()
         End Using
-
-        ' Find the newest date
-        If allDates.Count > 0 Then
+        If allDates.Count > 0 Then    ' Find the newest date
             Dim newestDate As DateTime = allDates.Max()
             lablName.Text = "Last Apply: " & newestDate.ToString("dd/MM/yyyy")
         Else

@@ -29,6 +29,7 @@ Partial Class Form1
         Me.exitButton = New System.Windows.Forms.Button()
         Me.wellcomeLabel = New System.Windows.Forms.Label()
         Me.applyGroupBox = New System.Windows.Forms.GroupBox()
+        Me.vpnCheckBox = New System.Windows.Forms.CheckBox()
         Me.ramLabel = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.userApply = New System.Windows.Forms.ComboBox()
@@ -37,8 +38,8 @@ Partial Class Form1
         Me.oneistwoChk = New System.Windows.Forms.CheckBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.toCombo = New System.Windows.Forms.ComboBox()
-        Me.Label3 = New System.Windows.Forms.Label()
         Me.fromCombo = New System.Windows.Forms.ComboBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.applyButton = New System.Windows.Forms.Button()
         Me.DateTimePicker = New System.Windows.Forms.DateTimePicker()
         Me.overTimeLabel = New System.Windows.Forms.Label()
@@ -98,6 +99,7 @@ Partial Class Form1
         'applyGroupBox
         '
         Me.applyGroupBox.BackColor = System.Drawing.SystemColors.Control
+        Me.applyGroupBox.Controls.Add(Me.vpnCheckBox)
         Me.applyGroupBox.Controls.Add(Me.ramLabel)
         Me.applyGroupBox.Controls.Add(Me.Label8)
         Me.applyGroupBox.Controls.Add(Me.userApply)
@@ -106,8 +108,8 @@ Partial Class Form1
         Me.applyGroupBox.Controls.Add(Me.oneistwoChk)
         Me.applyGroupBox.Controls.Add(Me.Label4)
         Me.applyGroupBox.Controls.Add(Me.toCombo)
-        Me.applyGroupBox.Controls.Add(Me.Label3)
         Me.applyGroupBox.Controls.Add(Me.fromCombo)
+        Me.applyGroupBox.Controls.Add(Me.Label3)
         Me.applyGroupBox.Controls.Add(Me.applyButton)
         Me.applyGroupBox.Controls.Add(Me.DateTimePicker)
         Me.applyGroupBox.Font = New System.Drawing.Font("Tahoma", 13.8!, CType(((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic) _
@@ -116,10 +118,22 @@ Partial Class Form1
         Me.applyGroupBox.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.applyGroupBox.Name = "applyGroupBox"
         Me.applyGroupBox.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.applyGroupBox.Size = New System.Drawing.Size(1156, 159)
+        Me.applyGroupBox.Size = New System.Drawing.Size(1156, 158)
         Me.applyGroupBox.TabIndex = 3
         Me.applyGroupBox.TabStop = False
         Me.applyGroupBox.Text = "Apply Attendance:"
+        '
+        'vpnCheckBox
+        '
+        Me.vpnCheckBox.AutoSize = True
+        Me.vpnCheckBox.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.vpnCheckBox.Location = New System.Drawing.Point(202, 107)
+        Me.vpnCheckBox.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.vpnCheckBox.Name = "vpnCheckBox"
+        Me.vpnCheckBox.Size = New System.Drawing.Size(67, 25)
+        Me.vpnCheckBox.TabIndex = 13
+        Me.vpnCheckBox.Text = "VPN"
+        Me.vpnCheckBox.UseVisualStyleBackColor = True
         '
         'ramLabel
         '
@@ -158,7 +172,7 @@ Partial Class Form1
         '
         Me.shiftLabel.AutoSize = True
         Me.shiftLabel.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.shiftLabel.Location = New System.Drawing.Point(249, 89)
+        Me.shiftLabel.Location = New System.Drawing.Point(313, 108)
         Me.shiftLabel.Name = "shiftLabel"
         Me.shiftLabel.Size = New System.Drawing.Size(57, 21)
         Me.shiftLabel.TabIndex = 9
@@ -170,7 +184,7 @@ Partial Class Form1
         Me.shiftCombo.Font = New System.Drawing.Font("Tahoma", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.shiftCombo.FormattingEnabled = True
         Me.shiftCombo.Items.AddRange(New Object() {"Mornning", "Afternoon", "Night"})
-        Me.shiftCombo.Location = New System.Drawing.Point(312, 84)
+        Me.shiftCombo.Location = New System.Drawing.Point(376, 103)
         Me.shiftCombo.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.shiftCombo.Name = "shiftCombo"
         Me.shiftCombo.Size = New System.Drawing.Size(157, 31)
@@ -180,7 +194,7 @@ Partial Class Form1
         '
         Me.oneistwoChk.AutoSize = True
         Me.oneistwoChk.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.oneistwoChk.Location = New System.Drawing.Point(13, 88)
+        Me.oneistwoChk.Location = New System.Drawing.Point(13, 107)
         Me.oneistwoChk.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.oneistwoChk.Name = "oneistwoChk"
         Me.oneistwoChk.Size = New System.Drawing.Size(163, 25)
@@ -192,7 +206,7 @@ Partial Class Form1
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(782, 89)
+        Me.Label4.Location = New System.Drawing.Point(796, 108)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(37, 21)
         Me.Label4.TabIndex = 6
@@ -204,35 +218,35 @@ Partial Class Form1
         Me.toCombo.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.toCombo.FormattingEnabled = True
         Me.toCombo.Items.AddRange(New Object() {"12:00 AM", "01:00 AM", "02:00 AM", "03:00 AM", "04:00 AM", "05:00 AM", "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM", "10:00 PM", "11:00 PM"})
-        Me.toCombo.Location = New System.Drawing.Point(829, 86)
+        Me.toCombo.Location = New System.Drawing.Point(838, 105)
         Me.toCombo.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.toCombo.Name = "toCombo"
         Me.toCombo.Size = New System.Drawing.Size(157, 29)
         Me.toCombo.TabIndex = 5
         Me.toCombo.Text = "12:00 AM"
         '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(514, 89)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(60, 21)
-        Me.Label3.TabIndex = 4
-        Me.Label3.Text = "From:"
-        '
         'fromCombo
         '
         Me.fromCombo.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.fromCombo.FormattingEnabled = True
         Me.fromCombo.Items.AddRange(New Object() {"12:00 AM", "01:00 AM", "02:00 AM", "03:00 AM", "04:00 AM", "05:00 AM", "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM", "10:00 PM", "11:00 PM"})
-        Me.fromCombo.Location = New System.Drawing.Point(580, 84)
+        Me.fromCombo.Location = New System.Drawing.Point(627, 105)
         Me.fromCombo.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.fromCombo.Name = "fromCombo"
         Me.fromCombo.Size = New System.Drawing.Size(157, 29)
         Me.fromCombo.TabIndex = 3
         Me.fromCombo.Tag = "Select Time"
         Me.fromCombo.Text = "12:00 AM"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.Location = New System.Drawing.Point(561, 108)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(60, 21)
+        Me.Label3.TabIndex = 4
+        Me.Label3.Text = "From:"
         '
         'applyButton
         '
@@ -542,7 +556,7 @@ Partial Class Form1
         Me.GroupBox1.Controls.Add(Me.breakFastLabel)
         Me.GroupBox1.Font = New System.Drawing.Font("Tahoma", 13.8!, CType(((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic) _
                 Or System.Drawing.FontStyle.Underline), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GroupBox1.Location = New System.Drawing.Point(1231, 98)
+        Me.GroupBox1.Location = New System.Drawing.Point(1231, 97)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(385, 158)
         Me.GroupBox1.TabIndex = 10
@@ -642,4 +656,5 @@ Partial Class Form1
     Friend WithEvents Label11 As Label
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents ComboBox1 As ComboBox
+    Friend WithEvents vpnCheckBox As CheckBox
 End Class

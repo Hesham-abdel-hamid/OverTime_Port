@@ -24,3 +24,4 @@ C:\Users\H\Documents\GitHub\OverTime_Port\OverTime_Port\bin\Debug\System.Data.SQ
 C:\Users\H\Documents\GitHub\OverTime_Port\OverTime_Port\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\H\Documents\GitHub\OverTime_Port\OverTime_Port\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\H\Documents\GitHub\OverTime_Port\OverTime_Port\obj\Debug\OverTime_Port.vbproj.ResolveComReference.cache
+C:\Users\H\Documents\GitHub\OverTime_Port\OverTime_Port\obj\Debug\OverTime_Port.Form2.resources
