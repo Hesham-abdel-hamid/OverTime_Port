@@ -10,6 +10,7 @@ Imports System.Globalization
 'Imports System.Data.OleDb
 Imports Microsoft.Office.Interop '.Excel
 Imports Microsoft.Office.Interop.Excel
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock
 'Imports Newtonsoft.Json.Linq
 
 Public Class Form1
@@ -288,6 +289,8 @@ Public Class Form1
     Private Sub reportButton_Click(sender As Object, e As EventArgs) Handles reportButton.Click
         Form2.Show()
         Form2.ProgressBar1.Value = 1
+        Dim iftarfileContents As String = File.ReadAllText("Iftar.txt")
+        Dim Iftar As DateTime = DateTime.ParseExact(iftarfileContents, "hh:mm tt", Nothing)
         Dim hijriMonth As Integer = hijriCalendar.GetMonth(CDate(DateTimePicker.Value.AddDays(offset)))  'ramadan is 9
         Dim hijriDay As Integer = hijriCalendar.GetDayOfMonth(CDate(DateTimePicker.Value.AddDays(offset)))
         Dim selectedMonth As String = ComboBox1.SelectedItem.ToString()
@@ -417,8 +420,8 @@ Public Class Form1
                                 While reader.Read()
                                     Dim Weekday As String = reader.GetString(0)
                                     Dim Shift As String = reader.GetString(1)
-                                    Dim FromTime As String = reader.GetString(2)
-                                    Dim ToTime As String = reader.GetString(3)
+                                    Dim FromTime As DateTime = DateTime.ParseExact(reader.GetString(2), "hh:mm tt", Nothing)
+                                    Dim ToTime As DateTime = DateTime.ParseExact(reader.GetString(3), "hh:mm tt", Nothing)
                                     Dim Type As String = reader.GetString(4)
                                     If Shift = "Mornning" Then
                                         If Type = "VPN" Then
@@ -445,8 +448,19 @@ Public Class Form1
                                     ElseIf Shift = "Afternoon" Then
                                         If hijriMonth = 9 Then    'ramadan
                                             tableWorksheet.Columns("D").Hidden = False
-
-
+                                            If Iftar > FromTime And Iftar < ToTime Then    ' Iftar shift
+                                                If Type = "VPN" Then
+                                                    tableWorksheet.Range("D" & (day + 2)).Value = Replace((tableWorksheet.Range("D" & (day + 2)).Value & "-" & user.arabNick & Type).TrimStart("-"c), "-", vbNewLine)
+                                                Else
+                                                    tableWorksheet.Range("D" & (day + 2)).Value = Replace((tableWorksheet.Range("D" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
+                                                End If
+                                            Else
+                                                If Type = "VPN" Then
+                                                    tableWorksheet.Range("C" & (day + 2)).Value = Replace((tableWorksheet.Range("C" & (day + 2)).Value & "-" & user.arabNick & Type).TrimStart("-"c), "-", vbNewLine)
+                                                Else
+                                                    tableWorksheet.Range("C" & (day + 2)).Value = Replace((tableWorksheet.Range("C" & (day + 2)).Value & "-" & user.arabNick).TrimStart("-"c), "-", vbNewLine)
+                                                End If
+                                            End If
                                         Else    'not ramadan
                                             If Type = "VPN" Then
                                                 tableWorksheet.Range("C" & (day + 2)).Value = Replace((tableWorksheet.Range("C" & (day + 2)).Value & "-" & user.arabNick & Type).TrimStart("-"c), "-", vbNewLine)
