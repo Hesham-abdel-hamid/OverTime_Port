@@ -10,7 +10,7 @@ Imports System.Globalization
 'Imports System.Data.OleDb
 Imports Microsoft.Office.Interop '.Excel
 Imports Microsoft.Office.Interop.Excel
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock
+'Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock
 'Imports Newtonsoft.Json.Linq
 
 Public Class Form1
@@ -510,7 +510,7 @@ Public Class Form1
         Form2.ProgressBar1.Value = 95
         Dim SaveFileDialog As New SaveFileDialog()    ' Save the workbook
         SaveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx"
-        SaveFileDialog.FileName = "overTime_Report.xlsx"
+        SaveFileDialog.FileName = "overTime_Report" & ComboBox1.Text & ".xlsx"
         SaveFileDialog.InitialDirectory = "\\nbe.ahly.bank\plz\New Departments\HQ\Business Technology\IT_Operation"
         Form2.ProgressBar1.Value = 100
         Form2.Close()

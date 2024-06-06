@@ -12,7 +12,7 @@
     "aliasName": "Hesham Refae",
     "rank": "man",
     "arabName": "هشام رفاعي سليمان",
-    "arabNick": "رفاعي",
+    "arabNick": "هشام_رفاعي",
     "inTable": "False"
   },
   {
@@ -20,7 +20,7 @@
     "aliasName": "DR. Amin",
     "rank": "man",
     "arabName": "أمين السيد حامد",
-    "arabNick": "أمين",
+    "arabNick": "أمين_أللقوة",
     "inTable": "False"
   },
   {
@@ -28,7 +28,7 @@
     "aliasName": "Mr. Ahmed Maher",
     "rank": "man",
     "arabName": "أحمد ماهر حسانين",
-    "arabNick": "ماهر",
+    "arabNick": "أحمد_ماهر",
     "inTable": "False"
   },
   {
@@ -36,7 +36,7 @@
     "aliasName": "Hesham Abdelhamid",
     "rank": "man",
     "arabName": "هشام محمد عبد الحميد منصور ابراهيم",
-    "arabNick": "هشام",
+    "arabNick": "هشام_عبد_الحميد",
     "inTable": "True"
   },
   {
@@ -44,7 +44,7 @@
     "aliasName": "Ahmed Kamel",
     "rank": "user",
     "arabName": "أحمد عبد الرحيم أحمد كامل",
-    "arabNick": "كامل",
+    "arabNick": "أحمد_كامل",
     "inTable": "True"
   },
   {
@@ -52,7 +52,7 @@
     "aliasName": "Mina Noshy",
     "rank": "user",
     "arabName": "مينا نصحي عزمي",
-    "arabNick": "نصحي",
+    "arabNick": "مينا_نصحي",
     "inTable": "True"
   },
   {
@@ -60,7 +60,7 @@
     "aliasName": "Mohamed Radwan",
     "rank": "user",
     "arabName": "محمد رضوان محمد السيد",
-    "arabNick": "رضوان",
+    "arabNick": "محمد_رضوان",
     "inTable": "True"
   },
   {
@@ -68,7 +68,7 @@
     "aliasName": "Mahmoud Khater",
     "rank": "user",
     "arabName": "محمود سيد كامل خاطر",
-    "arabNick": "خاطر",
+    "arabNick": "محمود_خاطر",
     "inTable": "True"
   },
   {
@@ -76,7 +76,7 @@
     "aliasName": "Ayman Habashy",
     "rank": "user",
     "arabName": "أيمن منير حبشي",
-    "arabNick": "حيشي",
+    "arabNick": "أيمن_حبشي",
     "inTable": "True"
   },
   {
@@ -84,7 +84,7 @@
     "aliasName": "Kirolos Mounir",
     "rank": "user",
     "arabName": "كيرلس منير اسحاق شنودة",
-    "arabNick": "كيرلس",
+    "arabNick": "كيرلس_منير",
     "inTable": "True"
   },
   {
@@ -92,7 +92,7 @@
     "aliasName": "Mina Gamal",
     "rank": "user",
     "arabName": "مينا جمال خله",
-    "arabNick": "جمال",
+    "arabNick": "مينا_جمال",
     "inTable": "True"
   },
   {
@@ -100,7 +100,7 @@
     "aliasName": "Omar Tharwat",
     "rank": "user",
     "arabName": "عمر ثروت مصطفي بهريز",
-    "arabNick": "عمر",
+    "arabNick": "عمر_ثروت",
     "inTable": "True"
   },
   {
@@ -108,7 +108,7 @@
     "aliasName": "Hady Maher",
     "rank": "user",
     "arabName": "هادي ماهر حسين عبد اللطيف",
-    "arabNick": "هادي",
+    "arabNick": "هادي_ماهر",
     "inTable": "True"
   },
   {
@@ -116,7 +116,7 @@
     "aliasName": "Amr Yehia",
     "rank": "user",
     "arabName": "عمرو يحيي أنور علي",
-    "arabNick": "عمرو",
+    "arabNick": "عمرو_يحيي",
     "inTable": "True"
   },
   {
@@ -124,7 +124,7 @@
     "aliasName": "Sherif Waly",
     "rank": "user",
     "arabName": "شريف عبد المنعم ابراهيم السيد والي",
-    "arabNick": "شريف",
+    "arabNick": "شريف_والي",
     "inTable": "True"
   },
   {
@@ -132,7 +132,7 @@
     "aliasName": "Yousef Hesham",
     "rank": "user",
     "arabName": "يوسف هشام مصطفي عبد الصادق",
-    "arabNick": "يوسف",
+    "arabNick": "يوسف_هشام",
     "inTable": "True"
   },
   {
@@ -140,7 +140,7 @@
     "aliasName": "Mostafa Samy",
     "rank": "user",
     "arabName": "مصطفي سامي شحات أحمد",
-    "arabNick": "مصطفي",
+    "arabNick": "مصطفي_سامي",
     "inTable": "True"
   }
 ]
