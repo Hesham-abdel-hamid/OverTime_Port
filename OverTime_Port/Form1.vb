@@ -1,17 +1,11 @@
-﻿'Imports Microsoft.VisualBasic.ApplicationServices
-Imports Newtonsoft.Json
+﻿Imports Newtonsoft.Json
 Imports System.IO
 Imports System.Data.SQLite
-'Imports System.Data.Entity.ModelConfiguration.Conventions
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel
 Imports System.Globalization
-'Imports System.Data.SqlClient
-'Imports System.Data.OleDb
-Imports Microsoft.Office.Interop '.Excel
+Imports Microsoft.Office.Interop
 Imports Microsoft.Office.Interop.Excel
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock
-'Imports Newtonsoft.Json.Linq
+Imports System.Text.RegularExpressions
+Imports System.Threading
 
 Public Class Form1
     Dim json As String = File.ReadAllText("u.json")     ' Read the contents of the JSON file
@@ -28,6 +22,8 @@ Public Class Form1
             userApply.Text = currentUser.aliasName
             monthCombo.Text = Mid(Format(DateTimePicker.Value, "dd/MM/yyyy"), 4, 2)
             ComboBox1.Text = Mid(Format(DateTimePicker.Value, "dd/MM/yyyy"), 4, 2)
+            yearCombo.Text = Mid(Format(DateTimePicker.Value, "dd/MM/yyyy"), 7, 4)
+            yearComboRep.Text = Mid(Format(DateTimePicker.Value, "dd/MM/yyyy"), 7, 4)
         Else
             MsgBox("your user Is Not authorized To access the application.")
             Close()
@@ -95,7 +91,7 @@ Public Class Form1
                     Else                                    'transpotation
                         Transport = morni
                     End If '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-                    If duration > 9 And hijriMonth <> 9 Then
+                    If duration > 10 And hijriMonth <> 9 Then
                         LunchT = 1                          'lunch allawences
                     End If ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
                     If hijriMonth = 9 Then
@@ -236,7 +232,12 @@ Public Class Form1
     Private Sub viewButton_Click(sender As Object, e As EventArgs) Handles viewButton.Click
         Dim currentUser As User = userList.Find(Function(u) u.aliasName = userCombo.Text)
         Dim connectionString As String = "Data Source=OPDB.db;Version=3;" ' Replace with your actual connection string
-        Dim query As String = "SELECT Name, Date, WeekDay As Day, Holiday As Type, Shift, Duration, Transportation, BreakFast, Lunch, OverTimeHours As OverTime, Review As Checker FROM T" & currentUser.userName & " WHERE date LIKE '%/" & monthCombo.Text & "/%' ORDER BY Julian ASC" ' SQL query to select rows where the date is in the desired month
+        Dim month As String = monthCombo.Text.PadLeft(2, "0"c)
+        Dim year As String = yearCombo.Text
+        Dim query As String = "SELECT Name, Date, WeekDay As Day, Holiday As Type, Shift, Duration, Transportation, BreakFast, Lunch, OverTimeHours As OverTime, Review As Checker " &
+                     "FROM T" & currentUser.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' " &
+                     "ORDER BY Julian ASC"
         Using connection As New SQLiteConnection(connectionString) ' Create a new SQLiteConnection using the connection string
             Dim adapter As New SQLiteDataAdapter(query, connection) ' Create a new SQLiteDataAdapter with the query and connection
             Dim dataSet As New DataSet() ' Create a new DataSet to hold the results
@@ -250,6 +251,22 @@ Public Class Form1
         For Each column As DataGridViewColumn In DataGridView1.Columns
             column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
         Next
+        Dim checkerColumn As New DataGridViewCheckBoxColumn()    ' Modify the "Checker" column to be a checkbox column
+        checkerColumn.HeaderText = "Checker"
+        checkerColumn.Name = "Checker"
+        checkerColumn.DataPropertyName = "Checker"
+        checkerColumn.Width = 80 ' Adjust the column width as needed
+        Dim checkerColumnIndex As Integer = -1     ' Remove the existing "Checker" column
+        For i As Integer = 0 To DataGridView1.Columns.Count - 1
+            If DataGridView1.Columns(i).Name = "Checker" Then
+                checkerColumnIndex = i
+                Exit For
+            End If
+        Next
+        If checkerColumnIndex >= 0 Then
+            DataGridView1.Columns.RemoveAt(checkerColumnIndex)
+        End If
+        DataGridView1.Columns.Add(checkerColumn)    ' Add the new checkbox column
         CalculateOverSum("T" & currentUser.userName, Label9, monthCombo.Text)
         CalculateTransSum("T" & currentUser.userName, Label2, monthCombo.Text)
         CalculateBreakFastSum("T" & currentUser.userName, Label10, monthCombo.Text)
@@ -269,7 +286,11 @@ Public Class Form1
                     command.Parameters.AddWithValue("@Column2Value", row.Cells("BreakFast").Value)
                     command.Parameters.AddWithValue("@Column3Value", row.Cells("Lunch").Value)
                     command.Parameters.AddWithValue("@Column4Value", row.Cells("OverTime").Value)
-                    command.Parameters.AddWithValue("@Column5Value", row.Cells("Review").Value)
+                    If TypeOf row.Cells("Checker") Is DataGridViewCheckBoxCell Then    ' Check if the "Checker" column is a checkbox column
+                        command.Parameters.AddWithValue("@Column5Value", DirectCast(row.Cells("Checker"), DataGridViewCheckBoxCell).Value)
+                    Else
+                        command.Parameters.AddWithValue("@Column5Value", row.Cells("Checker").Value)
+                    End If
                     command.Parameters.AddWithValue("@DateValue", row.Cells("Date").Value)
                     command.ExecuteNonQuery()
                 End If
@@ -290,7 +311,12 @@ Public Class Form1
         Form2.Show()
         Form2.ProgressBar1.Value = 1
         Dim iftarfileContents As String = File.ReadAllText("Iftar.txt")
-        Dim Iftar As DateTime = DateTime.ParseExact(iftarfileContents, "hh:mm tt", Nothing)
+        Dim Iftar As DateTime
+        If DateTime.TryParse(iftarfileContents, Iftar) Then
+        Else
+            MsgBox("Error: Could not parse the time format.")
+            Exit Sub
+        End If
         Dim hijriMonth As Integer = hijriCalendar.GetMonth(CDate(DateTimePicker.Value.AddDays(offset)))  'ramadan is 9
         Dim hijriDay As Integer = hijriCalendar.GetDayOfMonth(CDate(DateTimePicker.Value.AddDays(offset)))
         Dim selectedMonth As String = ComboBox1.SelectedItem.ToString()
@@ -302,8 +328,18 @@ Public Class Form1
         Dim totalWorksheet As Excel.Worksheet = workbook.Sheets("البدلات")
         Dim transWorksheet As Excel.Worksheet = workbook.Sheets("بدل الانتقال")    ' Get the first worksheet
         Dim tableWorksheet As Excel.Worksheet = workbook.Sheets("جدول الشهر")
+        totalWorksheet.Range("A3:F20").Value = ""
+        transWorksheet.Range("A3:F20").Value = ""
+        transWorksheet.Range("H3:I20").Value = ""
+        transWorksheet.Range("A3:F35").Value = ""
+        transWorksheet.Range("A100").Value = "رمضان"
+        transWorksheet.Range("A101").Value = "أجازة رسمية"
+        transWorksheet.Range("A102").Value = "عطلة أسبوعية"
+        transWorksheet.Range("A103").Value = "يوم عمل"
         Dim users As List(Of User) = JsonConvert.DeserializeObject(Of List(Of User))(json)
         Dim row As Integer = 3
+        Dim month As String = ComboBox1.Text.PadLeft(2, "0"c)
+        Dim year As String = yearComboRep.Text
         Form2.ProgressBar1.Value = Form2.ProgressBar1.Value + 1
         For Each user In users                ' total worksheet and transportation worksheet
             Form2.ProgressBar1.Value = Form2.ProgressBar1.Value + 5
@@ -313,7 +349,9 @@ Public Class Form1
                 transWorksheet.Range("A" & row).Value = user.arabName
                 transWorksheet.Range("B" & row).Value = user.userName
                 Dim connectionString As String = "Data Source=OPDB.db;Version=3;"
-                Dim query As String = "SELECT SUM(Transportation) FROM T" & user.userName & " WHERE Date LIKE '%/" & selectedMonth & "/%'"
+                Dim query As String = "SELECT SUM(Transportation) " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' "
                 Using connection As New SQLiteConnection(connectionString)
                     Dim command As New SQLiteCommand(query, connection)
                     connection.Open()
@@ -324,7 +362,9 @@ Public Class Form1
                         totalWorksheet.Range("C" & row).Value = "0"
                     End If
                 End Using
-                query = "SELECT SUM(OverTimeHours) FROM T" & user.userName & " WHERE Date LIKE '%/" & selectedMonth & "/%'"
+                query = "SELECT SUM(OverTimeHours) " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' "
                 Using connection As New SQLiteConnection(connectionString)
                     Dim command As New SQLiteCommand(query, connection)
                     connection.Open()
@@ -335,7 +375,9 @@ Public Class Form1
                         totalWorksheet.Range("D" & row).Value = "0"
                     End If
                 End Using
-                query = "SELECT SUM(BreakFast) FROM T" & user.userName & " WHERE Date LIKE '%/" & selectedMonth & "/%'"
+                query = "SELECT SUM(BreakFast) " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' "
                 Using connection As New SQLiteConnection(connectionString)
                     Dim command As New SQLiteCommand(query, connection)
                     connection.Open()
@@ -348,7 +390,9 @@ Public Class Form1
                         transWorksheet.Range("H" & row).Value = "0"
                     End If
                 End Using
-                query = "SELECT SUM(Lunch) FROM T" & user.userName & " WHERE Date LIKE '%/" & selectedMonth & "/%'"
+                query = "SELECT SUM(Lunch) " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' "
                 Using connection As New SQLiteConnection(connectionString)
                     Dim command As New SQLiteCommand(query, connection)
                     connection.Open()
@@ -361,7 +405,9 @@ Public Class Form1
                         transWorksheet.Range("I" & row).Value = "0"
                     End If
                 End Using
-                query = "SELECT COUNT(Transportation) FROM T" & user.userName & " WHERE Date LIKE '%/" & selectedMonth & "/%' AND Shift = 'Mornning' AND Holiday = 'WorkDay'"
+                query = "SELECT COUNT(Transportation) " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' AND Shift = 'Mornning' AND Holiday = 'WorkDay'"
                 Using connection As New SQLiteConnection(connectionString)
                     Dim command As New SQLiteCommand(query, connection)
                     connection.Open()
@@ -372,7 +418,9 @@ Public Class Form1
                         transWorksheet.Range("C" & row).Value = "0"
                     End If
                 End Using
-                query = "SELECT COUNT(Transportation) FROM T" & user.userName & " WHERE Date LIKE '%/" & selectedMonth & "/%' AND Shift = 'Afternoon' AND Holiday = 'WorkDay'"
+                query = "SELECT COUNT(Transportation) " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' AND Shift = 'Afternoon' AND Holiday = 'WorkDay'"
                 Using connection As New SQLiteConnection(connectionString)
                     Dim command As New SQLiteCommand(query, connection)
                     connection.Open()
@@ -383,7 +431,9 @@ Public Class Form1
                         transWorksheet.Range("D" & row).Value = "0"
                     End If
                 End Using
-                query = "SELECT COUNT(Transportation) FROM T" & user.userName & " WHERE Date LIKE '%/" & selectedMonth & "/%' AND Shift = 'Night' AND Holiday = 'WorkDay'"
+                query = "SELECT COUNT(Transportation) " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' AND Shift = 'Night' AND Holiday = 'WorkDay'"
                 Using connection As New SQLiteConnection(connectionString)
                     Dim command As New SQLiteCommand(query, connection)
                     connection.Open()
@@ -394,7 +444,9 @@ Public Class Form1
                         transWorksheet.Range("E" & row).Value = "0"
                     End If
                 End Using
-                query = "SELECT COUNT(Transportation) FROM T" & user.userName & " WHERE Date LIKE '%/" & selectedMonth & "/%' AND Holiday IN ('Official Holiday', 'WeekEnd')"
+                query = "SELECT COUNT(Transportation) " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE SUBSTR(Date, 4, 2) = '" & month & "' AND SUBSTR(Date, 7, 4) = '" & year & "' AND Holiday IN ('Official Holiday', 'WeekEnd')"
                 Using connection As New SQLiteConnection(connectionString)
                     Dim command As New SQLiteCommand(query, connection)
                     connection.Open()
@@ -406,11 +458,13 @@ Public Class Form1
                     End If
                 End Using
                 For day As Integer = 1 To daysInMonth    '''''''''''''''''''''''''''''The Table''''''''''''''''''''
-                    Dim currentDate As Date = New Date(DateTime.Now.Year, Convert.ToInt32(selectedMonth), day)
+                    Dim currentDate As Date = New Date(Convert.ToInt32(yearComboRep.Text), Convert.ToInt32(selectedMonth), day)
                     hijriMonth = hijriCalendar.GetMonth(currentDate.AddDays(offset))  'ramadan is 9
                     hijriDay = hijriCalendar.GetDayOfMonth(currentDate.AddDays(offset))
                     tableWorksheet.Range("A" & (day + 2)).Value = currentDate.ToString("dd/MM/yyyy") & vbNewLine & currentDate.DayOfWeek.ToString()
-                    query = "SELECT WeekDay, Shift, FromTime, ToTime, Holiday FROM T" & user.userName & " WHERE Date = @Date"
+                    query = "SELECT WeekDay, Shift, FromTime, ToTime, Holiday " &
+                     "FROM T" & user.userName & " " &
+                     "WHERE Date = @Date"
                     Using connection As New SQLiteConnection(connectionString)
                         Dim command As New SQLiteCommand(query, connection)
                         command.Parameters.AddWithValue("@Date", currentDate.ToString("dd/MM/yyyy"))
@@ -420,8 +474,10 @@ Public Class Form1
                                 While reader.Read()
                                     Dim Weekday As String = reader.GetString(0)
                                     Dim Shift As String = reader.GetString(1)
-                                    Dim FromTime As DateTime = DateTime.ParseExact(reader.GetString(2), "hh:mm tt", Nothing)
-                                    Dim ToTime As DateTime = DateTime.ParseExact(reader.GetString(3), "hh:mm tt", Nothing)
+                                    Dim FromTime As DateTime
+                                    DateTime.TryParse(reader.GetString(2), FromTime)
+                                    Dim ToTime As DateTime
+                                    DateTime.TryParse(reader.GetString(3), ToTime)
                                     Dim Type As String = reader.GetString(4)
                                     If Shift = "Mornning" Then
                                         If Type = "VPN" Then
@@ -508,11 +564,17 @@ Public Class Form1
         range.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter
         range.VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter
         Form2.ProgressBar1.Value = 95
+        For Each cell As Microsoft.Office.Interop.Excel.Range In range
+            If cell.Value = "" Then
+                cell.Interior.Color = RGB(192, 192, 192)
+            End If
+        Next cell
         Dim SaveFileDialog As New SaveFileDialog()    ' Save the workbook
         SaveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx"
         SaveFileDialog.FileName = "overTime_Report" & ComboBox1.Text & ".xlsx"
         SaveFileDialog.InitialDirectory = "\\nbe.ahly.bank\plz\New Departments\HQ\Business Technology\IT_Operation"
         Form2.ProgressBar1.Value = 100
+        Threading.Thread.Sleep(1000)
         Form2.Close()
         If SaveFileDialog.ShowDialog() = DialogResult.OK Then
             workbook.SaveAs(SaveFileDialog.FileName)
@@ -733,6 +795,14 @@ Public Class Form1
     End Sub
 
     Private Sub monthCombo_SelectedIndexChanged(sender As Object, e As EventArgs) Handles monthCombo.SelectedIndexChanged
+        DataGridView1.Columns.Clear()
+        Label9.Text = "OverTime: 0 Hours"
+        Label2.Text = "Transportation: 0 EGP"
+        Label10.Text = "BreakFast: 0"
+        Label7.Text = "Lunch: 0"
+    End Sub
+
+    Private Sub yearCombo_SelectedIndexChanged(sender As Object, e As EventArgs) Handles yearCombo.SelectedIndexChanged
         DataGridView1.Columns.Clear()
         Label9.Text = "OverTime: 0 Hours"
         Label2.Text = "Transportation: 0 EGP"

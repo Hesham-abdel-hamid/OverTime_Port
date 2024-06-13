@@ -44,6 +44,8 @@ Partial Class Form1
         Me.DateTimePicker = New System.Windows.Forms.DateTimePicker()
         Me.overTimeLabel = New System.Windows.Forms.Label()
         Me.quiryGroupBox = New System.Windows.Forms.GroupBox()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.yearCombo = New System.Windows.Forms.ComboBox()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -66,6 +68,8 @@ Partial Class Form1
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.lastApplyLable = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.yearComboRep = New System.Windows.Forms.ComboBox()
         Me.applyGroupBox.SuspendLayout()
         Me.quiryGroupBox.SuspendLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -282,6 +286,10 @@ Partial Class Form1
         '
         'quiryGroupBox
         '
+        Me.quiryGroupBox.Controls.Add(Me.Label13)
+        Me.quiryGroupBox.Controls.Add(Me.yearComboRep)
+        Me.quiryGroupBox.Controls.Add(Me.Label12)
+        Me.quiryGroupBox.Controls.Add(Me.yearCombo)
         Me.quiryGroupBox.Controls.Add(Me.ComboBox1)
         Me.quiryGroupBox.Controls.Add(Me.Label11)
         Me.quiryGroupBox.Controls.Add(Me.Label2)
@@ -308,12 +316,33 @@ Partial Class Form1
         Me.quiryGroupBox.TabStop = False
         Me.quiryGroupBox.Text = "User Activities:"
         '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label12.Location = New System.Drawing.Point(198, 82)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(54, 21)
+        Me.Label12.TabIndex = 16
+        Me.Label12.Text = "Year:"
+        '
+        'yearCombo
+        '
+        Me.yearCombo.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.yearCombo.FormattingEnabled = True
+        Me.yearCombo.Items.AddRange(New Object() {"2024", "2025", "2026", "2027", "2028", "2029", "2030"})
+        Me.yearCombo.Location = New System.Drawing.Point(258, 79)
+        Me.yearCombo.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.yearCombo.Name = "yearCombo"
+        Me.yearCombo.Size = New System.Drawing.Size(104, 29)
+        Me.yearCombo.TabIndex = 15
+        '
         'ComboBox1
         '
         Me.ComboBox1.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ComboBox1.FormattingEnabled = True
         Me.ComboBox1.Items.AddRange(New Object() {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"})
-        Me.ComboBox1.Location = New System.Drawing.Point(1509, 52)
+        Me.ComboBox1.Location = New System.Drawing.Point(1329, 53)
         Me.ComboBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ComboBox1.Name = "ComboBox1"
         Me.ComboBox1.Size = New System.Drawing.Size(76, 29)
@@ -344,7 +373,7 @@ Partial Class Form1
         'deleteButton
         '
         Me.deleteButton.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.deleteButton.Location = New System.Drawing.Point(800, 41)
+        Me.deleteButton.Location = New System.Drawing.Point(614, 41)
         Me.deleteButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.deleteButton.Name = "deleteButton"
         Me.deleteButton.Size = New System.Drawing.Size(200, 50)
@@ -378,7 +407,7 @@ Partial Class Form1
         '
         Me.reportButton.Enabled = False
         Me.reportButton.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.reportButton.Location = New System.Drawing.Point(1212, 41)
+        Me.reportButton.Location = New System.Drawing.Point(1026, 41)
         Me.reportButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.reportButton.Name = "reportButton"
         Me.reportButton.Size = New System.Drawing.Size(291, 50)
@@ -401,7 +430,7 @@ Partial Class Form1
         '
         Me.saveButton.Enabled = False
         Me.saveButton.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.saveButton.Location = New System.Drawing.Point(1006, 40)
+        Me.saveButton.Location = New System.Drawing.Point(820, 40)
         Me.saveButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.saveButton.Name = "saveButton"
         Me.saveButton.Size = New System.Drawing.Size(200, 50)
@@ -466,7 +495,7 @@ Partial Class Form1
         Me.monthCombo.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.monthCombo.FormattingEnabled = True
         Me.monthCombo.Items.AddRange(New Object() {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"})
-        Me.monthCombo.Location = New System.Drawing.Point(99, 79)
+        Me.monthCombo.Location = New System.Drawing.Point(86, 79)
         Me.monthCombo.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.monthCombo.Name = "monthCombo"
         Me.monthCombo.Size = New System.Drawing.Size(64, 29)
@@ -485,7 +514,7 @@ Partial Class Form1
         'viewButton
         '
         Me.viewButton.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.viewButton.Location = New System.Drawing.Point(594, 41)
+        Me.viewButton.Location = New System.Drawing.Point(408, 41)
         Me.viewButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.viewButton.Name = "viewButton"
         Me.viewButton.Size = New System.Drawing.Size(200, 50)
@@ -501,7 +530,7 @@ Partial Class Form1
         Me.userCombo.Location = New System.Drawing.Point(73, 41)
         Me.userCombo.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.userCombo.Name = "userCombo"
-        Me.userCombo.Size = New System.Drawing.Size(247, 29)
+        Me.userCombo.Size = New System.Drawing.Size(289, 29)
         Me.userCombo.TabIndex = 0
         '
         'breakFastLabel
@@ -584,6 +613,28 @@ Partial Class Form1
         Me.GroupBox2.TabIndex = 12
         Me.GroupBox2.TabStop = False
         '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.Font = New System.Drawing.Font("Tahoma", 13.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label13.Location = New System.Drawing.Point(1411, 53)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(25, 28)
+        Me.Label13.TabIndex = 18
+        Me.Label13.Text = "/"
+        '
+        'yearComboRep
+        '
+        Me.yearComboRep.AutoCompleteCustomSource.AddRange(New String() {"2024", "2025", "2026", "2027", "2028", "2029", "2030"})
+        Me.yearComboRep.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.yearComboRep.FormattingEnabled = True
+        Me.yearComboRep.Items.AddRange(New Object() {"2024", "2025", "2026", "2027", "2028", "2029", "2030"})
+        Me.yearComboRep.Location = New System.Drawing.Point(1442, 52)
+        Me.yearComboRep.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.yearComboRep.Name = "yearComboRep"
+        Me.yearComboRep.Size = New System.Drawing.Size(104, 29)
+        Me.yearComboRep.TabIndex = 17
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -657,4 +708,8 @@ Partial Class Form1
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents ComboBox1 As ComboBox
     Friend WithEvents vpnCheckBox As CheckBox
+    Friend WithEvents Label12 As Label
+    Friend WithEvents yearCombo As ComboBox
+    Friend WithEvents Label13 As Label
+    Friend WithEvents yearComboRep As ComboBox
 End Class

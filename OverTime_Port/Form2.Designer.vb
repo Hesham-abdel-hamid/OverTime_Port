@@ -42,9 +42,9 @@ Partial Class Form2
         Me.Label1.ForeColor = System.Drawing.SystemColors.HotTrack
         Me.Label1.Location = New System.Drawing.Point(97, 55)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(222, 24)
+        Me.Label1.Size = New System.Drawing.Size(193, 24)
         Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Generating Report...."
+        Me.Label1.Text = "Building Report...."
         Me.Label1.UseWaitCursor = True
         '
         'Form2
