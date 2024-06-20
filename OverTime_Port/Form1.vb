@@ -4,8 +4,6 @@ Imports System.Data.SQLite
 Imports System.Globalization
 Imports Microsoft.Office.Interop
 Imports Microsoft.Office.Interop.Excel
-Imports System.Text.RegularExpressions
-Imports System.Threading
 
 Public Class Form1
     Dim json As String = File.ReadAllText("u.json")     ' Read the contents of the JSON file
@@ -559,16 +557,21 @@ Public Class Form1
         Next
         Form2.ProgressBar1.Value = 90
         transWorksheet.Range("G" & row & ":G20").Value = ""
-        tableWorksheet.Range("A100:A103").Value = ""
         Dim range As Microsoft.Office.Interop.Excel.Range = tableWorksheet.Range("A3:F35")
         range.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter
         range.VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter
         Form2.ProgressBar1.Value = 95
         For Each cell As Microsoft.Office.Interop.Excel.Range In range
+            If InStr(cell.Value, tableWorksheet.Range("A101").Value) > 0 Or InStr(cell.Value, tableWorksheet.Range("A102").Value) > 0 Then
+                tableWorksheet.Range("A" & cell.Row & ":F" & cell.Row).Interior.Color = RGB(192, 225, 192)
+            End If
+        Next cell
+        For Each cell As Microsoft.Office.Interop.Excel.Range In range
             If cell.Value = "" Then
                 cell.Interior.Color = RGB(192, 192, 192)
             End If
         Next cell
+        tableWorksheet.Range("A100:A103").Value = ""
         Dim SaveFileDialog As New SaveFileDialog()    ' Save the workbook
         SaveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx"
         SaveFileDialog.FileName = "overTime_Report" & ComboBox1.Text & ".xlsx"
